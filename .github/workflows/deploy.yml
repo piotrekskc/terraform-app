@@ -11,7 +11,7 @@ on:
   
 jobs:
   build-and-push:
-    name: Build and Push Docker Image
+    name: Build and Push Docker Images
     runs-on: ubuntu-latest
 
     steps:
@@ -28,13 +28,21 @@ jobs:
       - name: Login to Azure Container Registry
         run: az acr login --name ${{ secrets.ACR_LOGIN_SERVER }}
 
-      - name: Build Docker Image
+      - name: Build Backend Docker Image
         run: |
-          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/example-webapp:latest .
+          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/backend-webapp:latest ./my-python-app/backend
 
-      - name: Push Docker Image to ACR
+      - name: Build Frontend Docker Image
         run: |
-          docker push ${{ secrets.ACR_LOGIN_SERVER }}/example-webapp:latest
+          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/frontend-webapp:latest ./my-python-app/frontend
+
+      - name: Push Backend Docker Image to ACR
+        run: |
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/backend-webapp:latest
+
+      - name: Push Frontend Docker Image to ACR
+        run: |
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/frontend-webapp:latest
 
   deploy-infra:
     name: Deploy Infrastructure
@@ -72,7 +80,7 @@ jobs:
         run: terraform apply -auto-approve
 
   update-app-service:
-    name: Update App Service with Latest Image
+    name: Update App Services with Latest Images
     runs-on: ubuntu-latest
     needs: deploy-infra
 
@@ -84,10 +92,18 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         
-      - name: Update App Service
+      - name: Update Backend App Service
         run: |
           az webapp config container set \
-            --name piotrc-webapp-terraform-app-04062025 \
+            --name piotrc-backend-app \
             --resource-group rg-PiotrC \
-            --docker-custom-image-name ${{ secrets.ACR_LOGIN_SERVER }}/example-webapp:latest \
+            --docker-custom-image-name ${{ secrets.ACR_LOGIN_SERVER }}/backend-webapp:latest \
+            --docker-registry-server-url https://${{ secrets.ACR_LOGIN_SERVER }}
+
+      - name: Update Frontend App Service
+        run: |
+          az webapp config container set \
+            --name piotrc-frontend-app \
+            --resource-group rg-PiotrC \
+            --docker-custom-image-name ${{ secrets.ACR_LOGIN_SERVER }}/frontend-webapp:latest \
             --docker-registry-server-url https://${{ secrets.ACR_LOGIN_SERVER }}
