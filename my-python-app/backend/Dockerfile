@@ -1,7 +1,7 @@
 # Backend Dockerfile
 FROM python:3.11-slim
 WORKDIR /app
-COPY my-python-app/backend/requirements.txt ./
+COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 EXPOSE 5000
