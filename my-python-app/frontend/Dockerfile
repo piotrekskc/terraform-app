@@ -11,4 +11,4 @@ FROM node:20-alpine
 WORKDIR /app
 COPY --from=build /app/public ./public
 EXPOSE 3000
-CMD ["npx", "serve", "-s", "public", "-l", "3000"]
+CMD ["sh", "-c", "npx serve -s public -l ${PORT:-3000}"]
