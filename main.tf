@@ -45,8 +45,8 @@ resource "azurerm_linux_web_app" "backend" {
 
   site_config {
     application_stack {
-      docker_image_name   = "${secrets.ACR_LOGIN_SERVER}/backend-webapp:latest"
-      docker_registry_url = "https://${secrets.ACR_LOGIN_SERVER}"
+      docker_image_name   = "${var.acr_login_server}/backend-webapp:latest"
+      docker_registry_url = "https://${var.acr_login_server}"
     }
   }
 }
@@ -59,8 +59,8 @@ resource "azurerm_linux_web_app" "frontend" {
 
   site_config {
     application_stack {
-      docker_image_name   = "${secrets.ACR_LOGIN_SERVER}/frontend-webapp:latest"
-      docker_registry_url = "https://${secrets.ACR_LOGIN_SERVER}"
+      docker_image_name   = "${var.acr_login_server}/frontend-webapp:latest"
+      docker_registry_url = "https://${var.acr_login_server}"
     }
   }
 }
