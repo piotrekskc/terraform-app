@@ -73,11 +73,11 @@ jobs:
 
       - name: Plan Terraform Changes
         shell: 'pwsh'
-        run: terraform plan
+        run: terraform plan -var="acr_login_server=${{ secrets.ACR_LOGIN_SERVER }}"
 
       - name: Apply Terraform Changes
         shell: 'pwsh'
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve -var="acr_login_server=${{ secrets.ACR_LOGIN_SERVER }}"
 
   update-app-service:
     name: Update App Services with Latest Images
