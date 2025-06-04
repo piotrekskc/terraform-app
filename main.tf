@@ -12,26 +12,26 @@ provider "azurerm" {
 
 terraform {
   backend "azurerm" {
-    resource_group_name  = "example-resources" #change here
-    storage_account_name = "tfstorage123dominik" #change here
+    resource_group_name  = "rg-PiotrC"
+    storage_account_name = "stpiotrc"
     container_name       = "tfstate"
     key                  = "terraform.tfstate"
   }
 }
 
 resource "azurerm_service_plan" "example" {
-  name                = "example-app-service-plan" #change here
-  location            = "westeurope" #change here
-  resource_group_name = "example-resources" #change here
+  name                = "piotrc-app-service-plan" #change here
+  location            = "westeurope"
+  resource_group_name = "rg-PiotrC"
   os_type             = "Linux"
   sku_name            = "P0v3"
 }
 
 
 resource "azurerm_linux_web_app" "example" {
-  name                = "example-webapp-123123i95u8fhwfdsewdwsa" #change here
-  location            = "westeurope" #change here
-  resource_group_name = "example-resources" #change here
+  name                = "piotrc-webapp-terraform-app-04062025" #change here
+  location            = "westeurope"
+  resource_group_name = "rg-PiotrC"
   service_plan_id     = azurerm_service_plan.example.id
   site_config {}
 }
